@@ -1,0 +1,53 @@
+# Reproducible hourly PyPSA-Eur operational backtest, May-June 2025.
+# Uses PyPSA-Eur's default costs and technology assumptions.
+run:
+  name: it-border-backtest-may-jun-2025-v3
+
+# Italy and its four directly interconnected neighbouring bidding areas.
+countries: [IT, FR, CH, AT, SI]
+
+sector:
+  enabled: false
+
+planning_horizons: [2025]
+
+# The synthetic load archive ends in 2023; 2025 demand is available in ENTSO-E.
+load:
+  supplement_synthetic: false
+
+snapshots:
+  start: "2025-05-01"
+  end: "2025-07-01"
+  inclusive: left
+
+atlite:
+  default_cutout: "europe-2025-sarah3-era5"
+
+clustering:
+  mode: administrative
+  administrative:
+    level: bz
+    countries:
+      FR: 0  # merge mainland France and Corsica into one market-price node
+
+# Historic dispatch uses the 2025 fleet and network as fixed capacities.
+electricity:
+  extendable_carriers:
+    Generator: []
+    StorageUnit: []
+    Store: []
+    Link: []
+  transmission_limit: v1.0
+
+lines:
+  s_nom_max_extension: 0
+
+links:
+  p_nom_max_extension: 0
+
+solving:
+  solver:
+    name: highs
+    options: highs-simplex
+  operations:
+    rolling_horizon: false

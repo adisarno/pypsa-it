@@ -919,11 +919,11 @@ def add_TES_energy_to_power_ratio_constraints(n: pypsa.Network) -> None:
         If the TES storage and charger indices do not align.
     """
     indices_charger_p_nom_extendable = n.links.index[
-        n.links.index.str.contains("water tanks charger|water pits charger")
+        n.links.index.astype(str).str.contains("water tanks charger|water pits charger")
         & n.links.p_nom_extendable
     ]
     indices_stores_e_nom_extendable = n.stores.index[
-        n.stores.index.str.contains("water tanks|water pits")
+        n.stores.index.astype(str).str.contains("water tanks|water pits")
         & n.stores.e_nom_extendable
     ]
 
@@ -983,13 +983,13 @@ def add_TES_charger_ratio_constraints(n: pypsa.Network) -> None:
         If the charger and discharger indices do not align.
     """
     indices_charger_p_nom_extendable = n.links.index[
-        n.links.index.str.contains(
+        n.links.index.astype(str).str.contains(
             "water tanks charger|water pits charger|aquifer thermal energy storage charger"
         )
         & n.links.p_nom_extendable
     ]
     indices_discharger_p_nom_extendable = n.links.index[
-        n.links.index.str.contains(
+        n.links.index.astype(str).str.contains(
             "water tanks discharger|water pits discharger|aquifer thermal energy storage discharger"
         )
         & n.links.p_nom_extendable
@@ -1034,8 +1034,8 @@ def add_battery_constraints(n):
     if not n.links.p_nom_extendable.any():
         return
 
-    discharger_bool = n.links.index.str.contains("battery discharger")
-    charger_bool = n.links.index.str.contains("battery charger")
+    discharger_bool = n.links.index.astype(str).str.contains("battery discharger")
+    charger_bool = n.links.index.astype(str).str.contains("battery charger")
 
     dischargers_ext = n.links[discharger_bool].query("p_nom_extendable").index
     chargers_ext = n.links[charger_bool].query("p_nom_extendable").index
@@ -1065,14 +1065,14 @@ def add_lossy_bidirectional_link_constraints(n):
 
 def add_chp_constraints(n):
     electric = (
-        n.links.index.str.contains("urban central")
-        & n.links.index.str.contains("CHP")
-        & n.links.index.str.contains("electric")
+        n.links.index.astype(str).str.contains("urban central")
+        & n.links.index.astype(str).str.contains("CHP")
+        & n.links.index.astype(str).str.contains("electric")
     )
     heat = (
-        n.links.index.str.contains("urban central")
-        & n.links.index.str.contains("CHP")
-        & n.links.index.str.contains("heat")
+        n.links.index.astype(str).str.contains("urban central")
+        & n.links.index.astype(str).str.contains("CHP")
+        & n.links.index.astype(str).str.contains("heat")
     )
 
     electric_ext = n.links[electric].query("p_nom_extendable").index
